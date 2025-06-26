@@ -1,0 +1,30 @@
+# Stage 1: Build Stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# Stage 2: Production Stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Global Vite installation is not necessary if you're only serving static files.
+# If you're just serving static files, use a lightweight static file server like serve instead.
+RUN npm install -g serve
+
+# Build output copy karen
+COPY --from=builder /app/dist ./dist
+
+# Port expose karen
+EXPOSE 5173
+
+# Serve command run karen
+CMD ["serve", "-s", "dist", "-l", "5173"]
