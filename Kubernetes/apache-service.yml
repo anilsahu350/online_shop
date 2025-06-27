@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-svc
+  namespace: online-shop-prod
+spec:
+  selector:
+    app: apache
+  ports:
+  - port: 80
+    targetPort: 80
