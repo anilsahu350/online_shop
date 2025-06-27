@@ -1,115 +1,142 @@
-# Online Shop 🛍️ for Hackathon Phase 1
+# Online Shop 🛍️ — DevOps & Kubernetes Deployment
 
-[![Stars](https://img.shields.io/github/stars/iemafzalhassan/online_shop)](https://github.com/iemafzalhassan/online_shop)
-![Forks](https://img.shields.io/github/forks/iemafzalhassan/online_shop)
-![GitHub last commit](https://img.shields.io/github/last-commit/iemafzalhassan/easyshop?color=red)
-[![GitHub Profile](https://img.shields.io/badge/GitHub-iemafzalhassan-blue?logo=github&style=flat)](https://github.com/iemafzalhassan)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-<p align="center">
-
-Welcome to the **Online Shop** project – our hackathon entry for Phase 1! This repository contains a fully functional e-commerce application built to demonstrate foundational DevOps skills in three key areas:
-
-- **Git & GitHub**
-- **Linux**
-- **Docker**
-
-In this phase, your focus is on understanding the provided developer code, reviewing how these core topics are implemented, and making any necessary enhancements. When you're ready, you'll submit your work via our designated Google Form.
+Welcome! This repository contains the **Online Shop** project — a modern e-commerce web application deployed with a full DevOps pipeline and Kubernetes infrastructure. This branch (`feature/shopping-cart-devops`) highlights my hands-on experience in automating build, testing, containerization, and cloud deployment.
 
 ---
 
-### Project Details
+## Project Summary
 
-### Content
+The Online Shop is a React-based web application demonstrating:
 
-- [**Situation**](#situation)
-- [**Task**](#task)
-- [**Action**](#action)
-- [**Result**](#result--resume)
-
-## Getting Started
-
-- Video Demonstration
-
-  [Video Demonstration](https://www.dropbox.com/scl/fi/06xq03rkx56hiak1080bo/videoDemo.mp4?rlkey=dje3ntpcd9zc3rzz1a1canhch&st=1vsn8k90&dl=0)
-
-1. Home Page
-![Home Page](public/homePage.png)
-1. Admin Page
-![Admin Page](public/adminPage.png)
-
-## Guidelines & Resources
-
-Before diving into the tasks, please review the following key resources:
-
-- [CONTRIBUTING.md](CONTRIBUTING.md): Guidelines for code contributions, commit messages, and overall coding standards.
-- [COMMANDS.md](): Command used by me throught the project from Configuration to Deployment. `Except Git Commands`
-- [ROADMAP.md](ROADMAP.md): Insights into the project vision, future enhancements, and milestones.
-- **Repository Documentation:** Explore the repository to understand how the application is built. Pay special attention to the `src` directory where the main application logic resides, as well as configuration files such as `vite.config.js` and styling in `index.css`.
-
-These documents provide the context needed to understand the project requirements and the best practices expected for your contributions.
+- **CI/CD automation** using Jenkins pipelines
+- **Code quality & security scanning** with SonarQube, OWASP Dependency Check, and Trivy
+- **Containerization** using Docker with optimized multi-stage builds
+- **Kubernetes orchestration** for scalable, reliable deployments
+- **Ingress routing** for HTTP traffic management
+- **MySQL deployment** with persistent storage and secret management (for practice)
 
 ---
 
-### Situation
+## Key Features & Highlights
 
-As part of the **Train With Shubham Hackathon Phase 1**, I was given the charge of deploying an Online Shopping Portal to the internet. The main goal was to ensure that the website was easily accessible, reliable, and scalable so that it could handle user traffic efficiently. Achiving this using DevOps automation tools to develop the deployment process, reducing manual effort, and improving overall system performance. Involved setting up the necessary infrastructure, automating deployments, and ensuring the application could run smoothly in a real time.
+### Jenkins Pipeline
 
----
+- Automatically builds, scans, and tests the project on every push
+- Performs SonarQube analysis for code quality
+- Runs OWASP Dependency Check and Trivy scans to identify vulnerabilities
+- Builds Docker images and pushes to Docker Hub securely
+- Sends detailed email reports with logs and scan summaries
 
-### Task
+### Docker
 
-- Develop the Required Infrastructre for Online Shopping Portal
-- Clonning Necessary Code and Artifacts ensurig Secrutiy and Accessbility
-- Strategize a `Deployment Plan` for brining the Applicaion to the Internet.
+- Multi-stage Dockerfile reduces image size by ~1GB and improves build times
+- `.dockerignore` reduces unnecessary files in the image
+- Docker Hub used as the image registry
 
-All this while ensuring:
+### Kubernetes Deployment
 
-- Gathering Necessary Resource for building the project.
-- Implementing Automation Scripts.
-- Using tools like `Docker` to build real world application.
-- Grasp a good Hands-On on DevOps tools.
-- Helping and Learning through Community!
-- Strong Cloud and DevOps Infrastructure.
-
-> Note: Remembering the Requirements
-
----
-
-### Action
-
-> I did this...
-
-- Understood the [ROADMAP.md](ROADMAP.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for build up the project.
-- Gathering the resources needed to fulfill the [`Task`](#task).
-- Build a [`Docker Installation Script`](docker_installation.sh) automation script for installing and using Docker.
-  > Running Script explained in [`COMMANDS.md File`]()!
-- Setting up this Git Repository and Adding and Commiting Files
-- Build a Dockerfile for the Online Shopping Portal Application
-- Implemented Multi-Stage Docker Build which reduced the size of Image by `1GB` and increased deployment speed by `50%` improving efficiency and faster deployment
-- Build a [`.dockerignore`](.dockerignore) file for ignoring the `Files and Directory` which are unecessary.
-- Using .dockerignore help reduce the docker image size and improving its deployment speed.
-- Built a `Docker Compose` file
-- - Lead to faster implementation of Application
-- - Performing Regular `Health Checks`.
-- - Custom Network Configuration
-- Implemented `Docker Scout` for Checking `Vulnerabilties` of Application. [`Docker Scout Report`](image_report.md)
-- Used `Amazon EC2` to bring the Application to Internet
-
-> Shown in Video Demonstration
+- Online Shop deployed as a Deployment with 2 replicas in the `online-shop-prod` namespace
+- Apache service deployed alongside, exposed via Kubernetes Service
+- Ingress resource routes `/shop` traffic to the app and `/apache` to the Apache service
+- MySQL deployed in a separate `mysql-ns` namespace with ConfigMaps and Secrets for secure environment setup and persistent volume claim for data storage
 
 ---
 
-### Result / Resume
+## Architecture Overview
 
-- Successfully deployed the `Online Shopping Portal` on the internet using DevOps automation tools.
-- Improved `deployment speed by 50% `and reduced `Docker image size by 1GB` using multi-stage builds.
-- Ensured security and efficiency by implementing `Docker Scout` for `vulnerability analysis`.
-- Automated the setup process with `Docker Installation Scripts` and `Docker Compose` for easy deployment.
-- Deployed the application on `Amazon EC2`, making it accessible and scalable for real users.
+The architecture of this project is designed to demonstrate a robust, scalable, and secure deployment of a modern e-commerce application using DevOps and Kubernetes best practices:
+
+- **Application Layer:**  
+  The Online Shop frontend is a React-based web app running inside Docker containers orchestrated by Kubernetes. It serves the user-facing storefront and manages product browsing, shopping cart, and checkout functionalities.
+
+- **Backend Services:**  
+  The application is supported by an Apache HTTP Server deployed as a separate Kubernetes Deployment and Service for serving static content or proxying requests if needed.
+
+- **Database Layer:**  
+  A MySQL database runs in its own isolated Kubernetes namespace (`mysql-ns`), ensuring data persistence via PersistentVolumes and PersistentVolumeClaims. Sensitive credentials like root passwords are managed securely using Kubernetes Secrets, and configuration values are stored in ConfigMaps.
+
+- **Containerization & Deployment:**  
+  Docker multi-stage builds produce optimized images that are pushed to Docker Hub. Jenkins automates the CI/CD pipeline, including building, scanning for vulnerabilities, and deploying containers to Kubernetes clusters.
+
+- **Kubernetes Orchestration:**  
+  Kubernetes manages container lifecycle, scaling, and networking. The Online Shop app runs with two replicas to ensure availability and load balancing.
+
+- **Ingress & Networking:**  
+  An NGINX Ingress controller manages external HTTP traffic, routing requests with path-based rules: `/shop` directs to the Online Shop service, and `/apache` routes to the Apache service, allowing clean URL paths and centralized access management.
+
+- **Security & Quality:**  
+  Continuous code quality checks via SonarQube and security scans through OWASP Dependency Check, Trivy, and Docker Scout help maintain a secure and reliable application throughout the CI/CD process.
+
+This layered, modular architecture ensures separation of concerns, scalability, and ease of management in a cloud-native environment.
+
+
+```plaintext
+User --> Ingress Controller -->
+         |--> Online Shop Service (Port 3000)
+         |--> Apache Service (Port 80)
+
+```
+
+## Kubernetes Resources
+
+```bash
+├── apache-deployment.yml
+├── apache-service.yml
+├── deployment.yml
+├── hpa.yml
+├── ingress.yml
+├── kind-cluster.yml
+├── mysql
+│   ├── configmap.yml
+│   ├── deployment.yml
+│   ├── namespace.yml
+│   ├── persistentVolume.yml
+│   ├── persistentVolumeClaim.yml
+│   └── secrets.yml
+├── namespace.yml
+├── service.yml
+└── vpa.yml
+```
+
+
+## How to Run / Test
+
+1. Clone the repo and checkout branch `feature/shopping-cart-devops`
+2. Run Jenkins pipeline for automated build and deployment
+3. Access the deployed application via the configured Ingress URL (e.g., `http://yourdomain/shop`)
+4. (Practice) MySQL deployed separately for learning persistent storage and secrets in Kubernetes
 
 ---
 
-Good luck for the hackathon
+## Technologies Used
 
-Happy Learning :)
+- React, JavaScript, CSS (Frontend)
+- Jenkins (CI/CD)
+- SonarQube, OWASP Dependency Check, Trivy (Security & Quality)
+- Docker (Containerization)
+- Kubernetes (Deployment & Orchestration)
+- MySQL (Database)
+- AWS EC2 (Cloud Hosting)
+
+---
+
+## Improvements & Future Work
+
+- Integrate MySQL fully with the Online Shop backend
+- Add automated testing & monitoring
+- Enable Horizontal Pod Autoscaling (HPA) for scalability
+- Migrate to managed Kubernetes (EKS/GKE/AKS) for production readiness
+
+---
+
+## Contact
+
+If you'd like to know more about the project or my DevOps experience, feel free to reach out:
+
+**Email:** anilsahu350@gmail.com  
+**GitHub:** [https://github.com/anilsahu350](https://github.com/anilsahu350)
+
+---
+
+Thank you for reviewing my project!  
+Happy to discuss any part of this setup..
