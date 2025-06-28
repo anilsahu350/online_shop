@@ -4,7 +4,7 @@ metadata:
   name: mysql-deployment
   namespace: mysql-ns
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -18,7 +18,7 @@ spec:
         image: mysql:latest
         resources:
           limits:
-            memory: "256Mi"
+            memory: "512Mi"
             cpu: "500m"
         ports:
         - containerPort: 3306

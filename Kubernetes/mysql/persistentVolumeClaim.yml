@@ -5,8 +5,8 @@ metadata:
   namespace: mysql-ns
 spec:
   storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
-    accessModes:
-    - ReadWriteOnce

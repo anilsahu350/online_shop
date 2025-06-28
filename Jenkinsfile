@@ -1,10 +1,10 @@
 pipeline {
-    agent any
+    agent { label "dev" }
 
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         DOCKER_IMAGE = ''
-        }
+    }
 
     stages {
         stage("Clean Workspace") {
@@ -15,7 +15,8 @@ pipeline {
 
         stage("Git Checkout") {
             steps {
-                git branch: 'feature/shopping-cart-devops', url: 'https://github.com/anilsahu350/online_shop.git'
+                git branch: 'feature/shopping-cart-devops',
+                    url: 'https://github.com/anilsahu350/online_shop.git'
             }
         }
 
@@ -39,13 +40,12 @@ pipeline {
             }
         }
 
-      
-        stage("OWASP FS SCAN") {
+        stage("OWASP FS Scan") {
             steps {
                 script {
                     def start = System.currentTimeMillis()
                     dependencyCheck additionalArguments: '--scan . --exclude node_modules --disableYarnAudit --disableNodeAudit -n',
-                        odcInstallation: 'DP-Check'
+                                     odcInstallation: 'DP-Check'
                     def end = System.currentTimeMillis()
                     echo "OWASP scan duration: ${(end - start)/1000} seconds"
                 }
@@ -55,87 +55,74 @@ pipeline {
 
         stage("Trivy File Scan") {
             steps {
-                sh "trivy fs . > trivy.txt"
+                sh 'trivy fs . > trivy.txt'
             }
         }
 
         stage("Build Docker Image") {
             steps {
-                sh "docker build -t online-shop -f Dockerfile.nginx ."
+                sh 'docker build -t online-shop -f Dockerfile.nginx .'
             }
         }
 
-        stage('Tag & Push to DockerHub') {
+        stage("Tag & Push to DockerHub") {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker',
-                                                  usernameVariable: 'DOCKER_USER',
-                                                  passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
                     script {
-                        def dockerImage = "${DOCKER_USER}/online-shop:latest"
-                        sh """
+                        def imageName = "${DOCKER_USER}/online-shop:latest"
+                        env.DOCKER_IMAGE = imageName
+                        sh '''
                             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                            docker tag online-shop $dockerImage
-                            docker push $dockerImage
-                        """
-                        // Save image name for next stage
-                        env.DOCKER_IMAGE = dockerImage
+                            docker tag online-shop ${DOCKER_IMAGE}
+                            docker push ${DOCKER_IMAGE}
+                        '''
                     }
                 }
             }
         }
 
-       stage("Docker Scout Image") {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker',
-                                                  usernameVariable: 'DOCKER_USER',
-                                                  passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker scout quickview ${env.DOCKER_IMAGE}
-                        docker scout cves ${env.DOCKER_IMAGE}
-                        docker scout recommendations ${env.DOCKER_IMAGE}
-                    """
-                }
-            }
-        }
+        
 
         stage("Deploy to Container") {
             steps {
-                sh """
+                sh '''
                     docker rm -f online-shop || true
-                    docker run -d --name online-shop -p 3000:80 ${env.DOCKER_IMAGE}
-                """
+                    docker run -d --name online-shop -p 3000:80 ${DOCKER_IMAGE}
+                '''
             }
         }
     }
 
     post {
-    always {
-        script {
-            def status = currentBuild.currentResult
-            def subjectStatus = status == 'SUCCESS' ? "SUCCESS" : status == 'FAILURE' ? "FAILURE" : "UNSTABLE"
-            def emailBody = """
-            <html>
-            <body>
-                <h2>Build Report - ${subjectStatus}</h2>
-                <div style="padding: 10px;">
+        always {
+            script {
+                def status = currentBuild.currentResult
+                def subjectStatus = status == 'SUCCESS' ? "SUCCESS" : status == 'FAILURE' ? "FAILURE" : "UNSTABLE"
+                def emailBody = """
+                <html>
+                <body>
+                    <h2>Build Report - ${subjectStatus}</h2>
                     <p><b>Project:</b> ${env.JOB_NAME}</p>
                     <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
                     <p><b>Status:</b> ${status}</p>
                     <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                </div>
-            </body>
-            </html>
-            """
+                </body>
+                </html>
+                """
 
-            emailext(
-                attachLog: true,
-                subject: "'${subjectStatus}' Online-Shop Project Build Result",
-                body: emailBody,
-                to: 'anilsahu350@gmail.com',
-                mimeType: 'text/html',
-                attachmentsPattern: 'trivy.txt'
-            )
+                emailext(
+                    to: 'anilsahu350@gmail.com',
+                    subject: "'${subjectStatus}' Online-Shop Build Report",
+                    body: emailBody,
+                    mimeType: 'text/html',
+                    attachLog: true,
+                    attachmentsPattern: 'trivy.txt'
+                )
+            }
         }
     }
 }

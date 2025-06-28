@@ -8,12 +8,12 @@ Welcome! This repository contains the **Online Shop** project — a modern e-com
 
 The Online Shop is a React-based web application demonstrating:
 
-- **CI/CD automation** using Jenkins pipelines
-- **Code quality & security scanning** with SonarQube, OWASP Dependency Check, and Trivy
-- **Containerization** using Docker with optimized multi-stage builds
-- **Kubernetes orchestration** for scalable, reliable deployments
-- **Ingress routing** for HTTP traffic management
-- **MySQL deployment** with persistent storage and secret management (for practice)
+- **CI/CD automation** using Jenkins pipelines  
+- **Code quality & security scanning** with SonarQube, OWASP Dependency Check, and Trivy  
+- **Containerization** using Docker with optimized multi-stage builds  
+- **Kubernetes orchestration** for scalable, reliable deployments  
+- **Ingress routing** for HTTP traffic management  
+- **MySQL deployment** with persistent storage and secret management (for practice)  
 
 ---
 
@@ -21,24 +21,24 @@ The Online Shop is a React-based web application demonstrating:
 
 ### Jenkins Pipeline
 
-- Automatically builds, scans, and tests the project on every push
-- Performs SonarQube analysis for code quality
-- Runs OWASP Dependency Check and Trivy scans to identify vulnerabilities
-- Builds Docker images and pushes to Docker Hub securely
-- Sends detailed email reports with logs and scan summaries
+- Automatically builds, scans, and tests the project on every push  
+- Performs SonarQube analysis for code quality  
+- Runs OWASP Dependency Check and Trivy scans to identify vulnerabilities  
+- Builds Docker images and pushes to Docker Hub securely  
+- Sends detailed email reports with logs and scan summaries  
 
 ### Docker
 
-- Multi-stage Dockerfile reduces image size by ~1GB and improves build times
-- `.dockerignore` reduces unnecessary files in the image
-- Docker Hub used as the image registry
+- Multi-stage Dockerfile reduces image size by ~1GB and improves build times  
+- `.dockerignore` excludes unnecessary files from the image  
+- Docker Hub used as the image registry  
 
 ### Kubernetes Deployment
 
-- Online Shop deployed as a Deployment with 2 replicas in the `online-shop-prod` namespace
-- Apache service deployed alongside, exposed via Kubernetes Service
-- Ingress resource routes `/shop` traffic to the app and `/apache` to the Apache service
-- MySQL deployed in a separate `mysql-ns` namespace with ConfigMaps and Secrets for secure environment setup and persistent volume claim for data storage
+- Online Shop deployed as a Deployment with 2 replicas in the `online-shop-prod` namespace  
+- Apache service deployed alongside, exposed via Kubernetes Service  
+- Ingress resource routes `/shop` traffic to the app and `/apache` to the Apache service  
+- MySQL deployed in a separate `mysql-ns` namespace with ConfigMaps and Secrets for secure environment setup and persistent volume claim for data storage  
 
 ---
 
@@ -47,28 +47,29 @@ The Online Shop is a React-based web application demonstrating:
 The architecture of this project is designed to demonstrate a robust, scalable, and secure deployment of a modern e-commerce application using DevOps and Kubernetes best practices:
 
 - **Application Layer:**  
-  The Online Shop frontend is a React-based web app running inside Docker containers orchestrated by Kubernetes. It serves the user-facing storefront and manages product browsing, shopping cart, and checkout functionalities.
+  React-based frontend hosted in Docker containers and orchestrated via Kubernetes. It handles product browsing, shopping cart, and checkout functionalities.
 
 - **Backend Services:**  
-  The application is supported by an Apache HTTP Server deployed as a separate Kubernetes Deployment and Service for serving static content or proxying requests if needed.
+  An Apache HTTP Server is deployed as a separate Kubernetes Deployment and Service for serving static content or proxying requests.
 
 - **Database Layer:**  
-  A MySQL database runs in its own isolated Kubernetes namespace (`mysql-ns`), ensuring data persistence via PersistentVolumes and PersistentVolumeClaims. Sensitive credentials like root passwords are managed securely using Kubernetes Secrets, and configuration values are stored in ConfigMaps.
+  A MySQL database runs in its own namespace (`mysql-ns`) using PersistentVolumes for data and Kubernetes Secrets for sensitive credentials.
 
 - **Containerization & Deployment:**  
-  Docker multi-stage builds produce optimized images that are pushed to Docker Hub. Jenkins automates the CI/CD pipeline, including building, scanning for vulnerabilities, and deploying containers to Kubernetes clusters.
+  Optimized Docker multi-stage builds are used for container images. Jenkins automates CI/CD, including scanning, building, and deploying containers to the cluster.
 
 - **Kubernetes Orchestration:**  
-  Kubernetes manages container lifecycle, scaling, and networking. The Online Shop app runs with two replicas to ensure availability and load balancing.
+  Kubernetes ensures high availability with two replicas, manages networking, and scales services as needed.
 
 - **Ingress & Networking:**  
-  An NGINX Ingress controller manages external HTTP traffic, routing requests with path-based rules: `/shop` directs to the Online Shop service, and `/apache` routes to the Apache service, allowing clean URL paths and centralized access management.
+  NGINX Ingress controller routes incoming traffic using clean, path-based rules:
+  - `/shop` → Online Shop frontend  
+  - `/apache` → Apache service  
 
 - **Security & Quality:**  
-  Continuous code quality checks via SonarQube and security scans through OWASP Dependency Check, Trivy, and Docker Scout help maintain a secure and reliable application throughout the CI/CD process.
+  Continuous security and quality checks using SonarQube, OWASP Dependency Check, and Trivy ensure reliability and early detection of issues.
 
-This layered, modular architecture ensures separation of concerns, scalability, and ease of management in a cloud-native environment.
-
+This modular architecture supports scalability, maintainability, and production-readiness in a cloud-native environment.
 
 ```plaintext
 User --> Ingress Controller -->
@@ -76,7 +77,6 @@ User --> Ingress Controller -->
          |--> Apache Service (Port 80)
 
 ```
-
 ## Kubernetes Resources
 
 ```bash
