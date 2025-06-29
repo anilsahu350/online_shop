@@ -8,6 +8,7 @@ metadata:
   labels:
     name: online-shop
 spec:
+  ingressClassName: nginx  # <-- Add this line
   rules:
   - http:
       paths:
@@ -16,12 +17,12 @@ spec:
         backend:
           service:
             name: online-shop-svc
-            port: 
+            port:
               number: 3000
-      -  pathType: Prefix
-         path: "/apache"
-         backend:
-            service:
-              name: apache-svc 
-              port:   
-                number: 80
+      - pathType: Prefix
+        path: "/apache"
+        backend:
+          service:
+            name: apache-svc 
+            port:
+              number: 80
